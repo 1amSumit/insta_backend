@@ -5,6 +5,7 @@ const multerStorage = multer.memoryStorage();
 const path = require("path");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 
 cloudinary.config({
   cloud_name: "dijmmmwgd",
@@ -32,43 +33,37 @@ exports.fileSaving = async (req, res, next) => {
       return next();
     }
 
-    const fileExtension = req.file.originalname.split(".")[1];
+    // const fileExtension = req.file.originalname.split(".")[1];
 
-    req.file.filename = `post-${Date.now()}.${fileExtension}`;
+    // let cloudinaryUpload;
 
-    if (req.file.mimetype.startsWith("image")) {
-      await sharp(req.file.buffer)
-        .resize(500, 500)
-        .jpeg({ quality: 90 })
-        .toFile(path.join(__dirname, "../public", "posts", req.file.filename));
-    }
+    // cloudinaryUpload = await cloudinary.uploader.upload(
+    //   req.file.avatar.data.toString("base64")
+    // );
 
-    if (req.file.mimetype.startsWith("video")) {
-      fs.writeFileSync(
-        path.join(__dirname, "../public", "posts", req.file.filename),
-        req.file.buffer,
-        (err) => {
-          throw new Error(err);
-        }
-      );
-    }
-    let cloudinaryUpload;
-    if (fileExtension === "mkv" || fileExtension === "mp4") {
-      cloudinaryUpload = await cloudinary.uploader.upload(
-        path.join(__dirname, "../public", "posts", req.file.filename),
-        {
-          resource_type: "video",
-          chunk_size: 6000000,
-        }
-      );
-    } else {
-      cloudinaryUpload = await cloudinary.uploader.upload(
-        path.join(__dirname, "../public", "posts", req.file.filename)
-      );
-    }
+    let uploadFromBuffer = (req) => {
+      return new Promise((resolve, reject) => {
+        let cld_upload_stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "foo",
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+      });
+    };
+
+    let result = await uploadFromBuffer(req);
 
     const post = await Post.create({
-      post: cloudinaryUpload.secure_url,
+      post: result.secure_url,
       user: req.user,
       description: req.body.description,
     });
