@@ -1,9 +1,6 @@
 const Post = require("../models/postModel");
 const multer = require("multer");
-const sharp = require("sharp");
 const multerStorage = multer.memoryStorage();
-const path = require("path");
-const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 
@@ -33,34 +30,51 @@ exports.fileSaving = async (req, res, next) => {
       return next();
     }
 
-    // const fileExtension = req.file.originalname.split(".")[1];
+    let result;
 
-    // let cloudinaryUpload;
-
-    // cloudinaryUpload = await cloudinary.uploader.upload(
-    //   req.file.avatar.data.toString("base64")
-    // );
-
-    let uploadFromBuffer = (req) => {
-      return new Promise((resolve, reject) => {
-        let cld_upload_stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "foo",
-          },
-          (error, result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(error);
+    if (req.file.mimetype.startsWith("video")) {
+      let uploadFromBuffer = (req) => {
+        return new Promise((resolve, reject) => {
+          let cld_upload_stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "foo",
+              resource_type: "video",
+              chunk_size: 6000000,
+            },
+            (error, result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
             }
-          }
-        );
+          );
 
-        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
-      });
-    };
+          streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+        });
+      };
+      result = await uploadFromBuffer(req);
+    } else {
+      let uploadFromBuffer = (req) => {
+        return new Promise((resolve, reject) => {
+          let cld_upload_stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "foo",
+            },
+            (error, result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
+            }
+          );
 
-    let result = await uploadFromBuffer(req);
+          streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+        });
+      };
+      result = await uploadFromBuffer(req);
+    }
 
     const post = await Post.create({
       post: result.secure_url,
