@@ -18,7 +18,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRouter);
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Hallo from server",
