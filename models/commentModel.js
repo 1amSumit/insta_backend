@@ -72,15 +72,15 @@ commentSchema.post("save", function () {
   this.constructor.addCommentToPost(this.post);
 });
 
-commentSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne();
+// commentSchema.pre(/^findOneAnd/, async function (next) {
+//   this.r = await this.findOne();
 
-  next();
-});
+//   next();
+// });
 
-commentSchema.post(/^findOne/, async function () {
-  await this.r.constructor.calNumComments(this.r.post);
-});
+// commentSchema.post(/^findOne/, async function () {
+//   await this.r.constructor.calNumComments(this.r.post);
+// });
 
 const Comment = mongoose.model("Comment", commentSchema);
 

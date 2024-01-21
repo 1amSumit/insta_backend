@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 const tokenGen = function (id) {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -23,12 +24,12 @@ exports.login = catchAsync(async (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
-    throw new Error("Please enter a email and password");
+    return next(new AppError("Please provide your correct email and password"));
   }
 
   const user = await User.findOne({ email }).select("+password");
   if (!user || !(await user.correctPasssword(password, user.password))) {
-    throw new Error("Inavlid email or password");
+    return next(new AppError("Invalid email or password"));
   }
 
   const token = tokenGen(user._id);
@@ -58,10 +59,10 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   if (isEmailAlreadyexist) {
-    throw new Error("User already exists with ths email");
+    return next(new AppError("User already exists with ths email"));
   }
   if (isUsernameAlreadyexist) {
-    throw new Error("User already exists with ths Username");
+    return next(new AppError("User already exists with ths Username"));
   }
 
   const newUser = await User.create({
@@ -103,7 +104,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.cookie.jwt;
   }
   if (!token) {
-    throw new Error("You are not LoggedIn please login.");
+    return next(new AppError("You are not LoggedIn please login."));
   }
 
   const tokenIsValid = await promisify(jwt.verify)(
@@ -114,7 +115,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const freshUser = await User.findById(tokenIsValid.id);
 
   if (!freshUser) {
-    throw new Error("User does not exists.");
+    return next(new AppError("User does not exists."));
   }
   //need to check if user change dpassword sfter login
 
@@ -127,7 +128,7 @@ exports.getUserById = catchAsync(async (req, res, next) => {
   const id = req.params.userId;
   const user = await User.findOne({ username: id });
   if (!user) {
-    throw new Error("User not found.");
+    return next(new Error("User not found."));
   }
   res.status(200).json({
     status: "success",

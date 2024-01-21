@@ -8,6 +8,6 @@ router.use(userController.protect);
 router.get("/getAllComments", commentController.getAllComments);
 
 router.post("/addComment/:postId", commentController.addComment);
-router.patch("/updateComment/:postId", commentController.updateCommnet);
-router.delete("/deleteComment/:postId", commentController.deleteComment);
+router.patch("/updateComment/:comId", commentController.updateComment);
+router.delete("/deleteComment/:comId", commentController.deleteComment);
 module.exports = router;

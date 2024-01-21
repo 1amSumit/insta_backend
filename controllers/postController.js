@@ -4,6 +4,7 @@ const multerStorage = multer.memoryStorage();
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 cloudinary.config({
   cloud_name: "dijmmmwgd",
@@ -119,7 +120,7 @@ exports.getPostOfLoggedInUser = catchAsync(async (req, res, next) => {
 exports.getUserPosts = catchAsync(async (req, res, next) => {
   const userId = req.params.userId;
   if (!userId) {
-    throw new Error("No user Found");
+    return next(new AppError("user not found"));
   }
   const userPosts = await Post.find({
     user: userId,
