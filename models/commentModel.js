@@ -40,6 +40,15 @@ commentSchema.pre(/^find/, function (next) {
   next();
 });
 
+commentSchema.statics.addCommentToPost = async function (postId) {
+  const comments = await this.find({ post: postId });
+  let arrComments = [];
+  comments.map((comment) => arrComments.push(comment.comment));
+  await Post.findByIdAndUpdate(postId, {
+    comments: arrComments,
+  });
+};
+
 commentSchema.statics.calNumComments = async function (postId) {
   const numComment = await this.aggregate([
     {
@@ -60,9 +69,8 @@ commentSchema.statics.calNumComments = async function (postId) {
 
 commentSchema.post("save", function () {
   this.constructor.calNumComments(this.post);
+  this.constructor.addCommentToPost(this.post);
 });
-
-commentSchema.index({ post: 1, user: 1 }, { unique: true });
 
 commentSchema.pre(/^findOneAnd/, async function (next) {
   this.r = await this.findOne();
@@ -70,7 +78,7 @@ commentSchema.pre(/^findOneAnd/, async function (next) {
   next();
 });
 
-commentSchema.post(/^findOneAnd/, async function () {
+commentSchema.post(/^findOne/, async function () {
   await this.r.constructor.calNumComments(this.r.post);
 });
 

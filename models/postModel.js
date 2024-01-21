@@ -17,9 +17,8 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    comment: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Comment",
+    comments: {
+      type: [String],
     },
     numComments: {
       type: Number,
@@ -42,11 +41,6 @@ postSchema.pre(/^find/, function (next) {
     path: "user",
     select: "username profilePic",
   });
-  this.populate("comment").populate({
-    path: "comment",
-    select: "comment post user",
-  });
-  this.populate("numComments").populate();
   next();
 });
 
