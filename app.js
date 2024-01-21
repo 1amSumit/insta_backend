@@ -6,6 +6,7 @@ const postRouter = require("./routes/postRoutes");
 const commentRouter = require("./routes/commentRoutes");
 const likeRoutes = require("./routes/likeRoutes");
 const errorController = require("./controllers/errorController");
+const AppError = require("./utils/appError");
 
 const app = express();
 app.use(cors());
@@ -17,18 +18,11 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "2mb" }));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRoutes);
-
-app.get("/api", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "Hallo from server",
-  });
-});
 
 // app.options('*', cors());
 app.all("*", (req, res, next) => {
