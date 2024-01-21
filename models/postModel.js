@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const User = require("./userModel");
-const Like = require("./ratingModel");
-const Comment = require("./commentModel");
 
 const postSchema = new mongoose.Schema(
   {
@@ -24,6 +21,10 @@ const postSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Comment",
     },
+    numComments: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -45,9 +46,10 @@ postSchema.pre(/^find/, function (next) {
     path: "comment",
     select: "comment post user",
   });
+  this.populate("numComments").populate();
   next();
 });
 
-const POST = mongoose.model("POST", postSchema);
+const Post = mongoose.model("Post", postSchema);
 
-module.exports = POST;
+module.exports = Post;

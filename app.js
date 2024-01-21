@@ -3,6 +3,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const userRoutes = require("./routes/usersRoutes");
 const postRouter = require("./routes/postRoutes");
+const commentRouter = require("./routes/commentRoutes");
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/api", limiter);
 app.use(express.json({ limit: "10mb" }));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/comments", commentRouter);
 
 app.get("/api", (req, res) => {
   res.status(200).json({

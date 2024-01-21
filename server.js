@@ -7,11 +7,11 @@ process.on("uncaughtException", (error) => {
   process.exit(1);
 });
 
-dotenv.config({ path: "../config.env" });
+dotenv.config({ path: "./config.env" });
 
 const DB = process.env.DATA_BASE;
 
-mongoose.connect(DB, {}).then(() => {
+mongoose.connect(DB).then(() => {
   console.log("DB connection established");
 });
 

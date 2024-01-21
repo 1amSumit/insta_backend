@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const User = require("./userModel");
 const Post = require("./postModel");
 
-const commentSchema = new mongoose.Schema(
+const ratingSchema = new mongoose.Schema(
   {
-    comment: {
-      type: String,
-      trim: true,
+    like: {
+      type: Boolean,
+      default: false,
     },
     createdAt: {
       type: Date,
@@ -29,6 +29,16 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-const Comment = mongoose.model("Comment", commentSchema);
+ratingSchema.pre(/^find/, function (next) {
+  this.populate("user").populate({
+    path: "user",
+    select: "username _id",
+  });
+  this.populate("post").populate({
+    path: "post",
+    select: "_id post ",
+  });
+});
 
-module.exports = Comment;
+const Like = mongoose.model("Like", ratingSchema);
+module.exports = Like;
