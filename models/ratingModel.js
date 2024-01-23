@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("./userModel");
 const Post = require("./postModel");
-const catchAsync = require("../utils/catchAsync");
 
 const ratingSchema = new mongoose.Schema(
   {
@@ -39,9 +38,10 @@ ratingSchema.pre(/^find/, function (next) {
     path: "post",
     select: "_id post ",
   });
+  next();
 });
 
-ratingSchema.statics.calLikes = catchAsync(async function (postId) {
+ratingSchema.statics.calLikes = async function (postId) {
   const numLikes = await this.aggregate([
     {
       $match: { post: postId },
@@ -57,19 +57,11 @@ ratingSchema.statics.calLikes = catchAsync(async function (postId) {
   await Post.findByIdAndUpdate(postId, {
     likes: numLikes[0].numLikes,
   });
-});
+};
 ratingSchema.index({ post: 1, user: 1 }, { unique: true });
 
 ratingSchema.post("save", function () {
-  try {
-    this.constructor.calLikes(this.post);
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      error: err,
-      message: err.message,
-    });
-  }
+  this.constructor.calLikes(this.post);
 });
 
 const Like = mongoose.model("Like", ratingSchema);

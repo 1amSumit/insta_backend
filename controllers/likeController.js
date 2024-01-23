@@ -18,22 +18,24 @@ exports.addLike = catchAsync(async (req, res, next) => {
     like,
     message: "Successfully liked the message",
   });
-  next();
 });
 
 exports.getAllLikes = catchAsync(async (req, res, next) => {
   const likes = await Like.find();
-
   res.status(200).json({
     status: "success",
     results: likes.length,
     likes,
   });
-  next();
 });
 
 exports.updateLike = catchAsync(async (req, res, next) => {
-  const previousLike = await Like.find({ post: req.params.id });
+  const previousLike = await Like.findById(req.params.id);
+  await Like.findByIdAndUpdate(req.params.id, {
+    like: !previousLike.like,
+  });
 
-  console.log(previousLike);
+  res.status(200).json({
+    message: "Like updated",
+  });
 });
