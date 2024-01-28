@@ -95,7 +95,7 @@ exports.fileSaving = catchAsync(async (req, res, next) => {
 exports.postUpload = upload.single("file"); //"file"--> this should b same as in the form submiting name
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  const posts = await Post.find().populate("user");
+  const posts = await Post.find().populate("user").sort({ createdAt: -1 });
   res.status(200).json({
     status: "success",
     results: posts.length,
