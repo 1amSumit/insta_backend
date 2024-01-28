@@ -49,7 +49,6 @@ exports.login = catchAsync(async (req, res, next) => {
       user,
     },
   });
-  next();
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -90,7 +89,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       newUser,
     },
   });
-  next();
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -101,7 +99,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
   } else if (req.cookies.jwt) {
-    token = req.cookie.jwt;
+    token = req.cookies.jwt;
   }
   if (!token) {
     return next(new AppError("You are not LoggedIn please login."));
