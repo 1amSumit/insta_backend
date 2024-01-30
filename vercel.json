@@ -6,5 +6,5 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/api/v1" }]
+  "routes": [{ "source": "/(.*)", "destination": "/api/v1" }]
 }
