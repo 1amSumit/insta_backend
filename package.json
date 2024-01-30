@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon --trace-warnings server.js  ",
-    "start": "NODE_ENV=production && nodemon ./server.js",
-    "vercel-build": "echo hallo"
+    "start": "node ./server.js"
   },
   "keywords": [],
   "author": "",
