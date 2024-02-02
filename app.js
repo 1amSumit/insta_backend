@@ -9,6 +9,7 @@ const errorController = require("./controllers/errorController");
 const AppError = require("./utils/appError");
 
 const app = express();
+
 app.use(cors());
 
 const limiter = rateLimit({
@@ -19,6 +20,7 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 app.use(express.json({ limit: "2mb" }));
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);

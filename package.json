@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "engines": {
-    "node": ">=16.0.0 <=20.0.0"
-  },
   "scripts": {
     "dev": "nodemon --trace-warnings server.js  ",
     "start": "node server.js",
-    "vercel-build": "npm install"
+    "vercel-build": "echo hallo"
   },
   "keywords": [],
   "author": "",

@@ -18,7 +18,7 @@ const ratingSchema = new mongoose.Schema(
       required: [true, "Every Comment must have user"],
     },
     post: {
-      type: mongoose.Schema.Types.Object,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
       required: [true, "Every Comment must have post"],
     },
@@ -44,7 +44,7 @@ ratingSchema.pre(/^find/, function (next) {
 ratingSchema.statics.calLikes = async function (postId) {
   const numLikes = await this.aggregate([
     {
-      $match: { post: postId },
+      $match: { post: postId, like: true },
     },
     {
       $group: {

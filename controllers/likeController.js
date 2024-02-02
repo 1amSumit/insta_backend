@@ -4,6 +4,7 @@ const AppError = require("../utils/appError");
 
 exports.addLike = catchAsync(async (req, res, next) => {
   const postId = req.params.postId;
+
   if (!postId) {
     return next(new AppError("Post Does not exists"));
   }
@@ -11,6 +12,7 @@ exports.addLike = catchAsync(async (req, res, next) => {
     like: true,
     post: postId,
     user: req.user,
+    createdAt: Date.now(),
   });
 
   res.status(200).json({
@@ -30,10 +32,28 @@ exports.getAllLikes = catchAsync(async (req, res, next) => {
 });
 
 exports.updateLike = catchAsync(async (req, res, next) => {
-  const previousLike = await Like.findById(req.params.id);
-  await Like.findByIdAndUpdate(req.params.id, {
-    like: !previousLike.like,
-  });
+  const previousLike = await Like.findOne({ post: req.params.postId });
+
+  if (!previousLike) {
+    const like = await Like.create({
+      like: true,
+      post: req.params.postId,
+      user: req.user,
+      createdAt: Date.now(),
+    });
+
+    return res.status(200).json({
+      message: "successfully likes post",
+      like,
+    });
+  }
+
+  await Like.findOneAndUpdate(
+    { post: req.params.postId },
+    {
+      like: !previousLike.like,
+    }
+  );
 
   res.status(200).json({
     message: "Like updated",

@@ -81,6 +81,7 @@ exports.fileSaving = catchAsync(async (req, res, next) => {
     post: result.secure_url,
     user: req.user,
     description: req.body.description,
+    createdAt: Date.now(),
   });
 
   res.status(200).json({
@@ -88,14 +89,15 @@ exports.fileSaving = catchAsync(async (req, res, next) => {
     message: "Posted successfully",
     post,
   });
-
-  next();
 });
 
 exports.postUpload = upload.single("file"); //"file"--> this should b same as in the form submiting name
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
-  const posts = await Post.find().populate("user").sort({ createdAt: -1 });
+  const posts = await Post.find()
+    .populate("user")
+    .sort({ createdAt: -1 })
+    .exec();
   res.status(200).json({
     status: "success",
     results: posts.length,
@@ -114,7 +116,6 @@ exports.getPostOfLoggedInUser = catchAsync(async (req, res, next) => {
     results: userPosts.length,
     userPosts,
   });
-  next();
 });
 
 exports.getUserPosts = catchAsync(async (req, res, next) => {
@@ -131,5 +132,4 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
     results: userPosts.length,
     userPosts,
   });
-  next();
 });
