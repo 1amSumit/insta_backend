@@ -41,6 +41,15 @@ ratingSchema.pre(/^find/, function (next) {
   next();
 });
 
+ratingSchema.statics.addLikeToPost = async function (postId) {
+  const likes = await this.find({ post: postId });
+  let likeArr = [];
+  likes.map((like) => likeArr.push(like.user.username));
+  await Post.findByIdAndUpdate(postId, {
+    likedUser: likeArr,
+  });
+};
+
 ratingSchema.statics.calLikes = async function (postId) {
   const numLikes = await this.aggregate([
     {
@@ -60,8 +69,9 @@ ratingSchema.statics.calLikes = async function (postId) {
 };
 ratingSchema.index({ post: 1, user: 1 }, { unique: true });
 
-ratingSchema.post("save", function () {
-  this.constructor.calLikes(this.post);
+ratingSchema.post("save", async function () {
+  await this.constructor.calLikes(this.post);
+  await this.constructor.addLikeToPost(this.post);
 });
 
 const Like = mongoose.model("Like", ratingSchema);

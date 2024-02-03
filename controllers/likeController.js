@@ -59,3 +59,15 @@ exports.updateLike = catchAsync(async (req, res, next) => {
     message: "Like updated",
   });
 });
+
+exports.disLike = catchAsync(async (req, res, next) => {
+  const post = await Like.findOne({
+    post: req.params.postId,
+    user: req.user,
+  });
+  const likeId = post._id;
+  await Like.findByIdAndDelete(likeId);
+  res.status(200).json({
+    message: "Like Updated",
+  });
+});

@@ -70,6 +70,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
     role: req.body.role,
+    createdAt: Date.now(),
   });
 
   const token = tokenGen(newUser._id);

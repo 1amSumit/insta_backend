@@ -7,5 +7,6 @@ router.use(userController.protect);
 router.get("/getAllLikes", likeController.getAllLikes);
 router.post("/giveLike/:postId", likeController.addLike);
 router.post("/updateLike/:postId", likeController.updateLike);
+router.delete("/deleteLike/:postId", likeController.disLike);
 
 module.exports = router;

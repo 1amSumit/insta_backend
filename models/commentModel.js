@@ -67,9 +67,9 @@ commentSchema.statics.calNumComments = async function (postId) {
   });
 };
 
-commentSchema.post("save", function () {
-  this.constructor.calNumComments(this.post);
-  this.constructor.addCommentToPost(this.post);
+commentSchema.post("save", async function () {
+  await this.constructor.calNumComments(this.post);
+  await this.constructor.addCommentToPost(this.post);
 });
 
 // commentSchema.pre(/^findOneAnd/, async function (next) {
