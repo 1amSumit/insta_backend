@@ -12,24 +12,23 @@ exports.addComment = catchAsync(async (req, res, next) => {
     comment,
     post: req.params.postId,
     user: req.user,
+    createdAt: Date.now(),
   });
 
   res.status(200).json({
     status: "Success",
     commentCreated,
   });
-  next();
 });
 
 exports.getAllComments = catchAsync(async (req, res, next) => {
-  const comments = await Comment.find();
+  const comments = await Comment.find().sort({ createdAt: -1 });
 
   res.status(200).json({
     status: "seccess",
     results: comments.length,
     comments,
   });
-  next();
 });
 
 exports.deleteComment = catchAsync(async (req, res, next) => {
@@ -49,5 +48,4 @@ exports.updateComment = catchAsync(async (req, res, next) => {
     status: "success",
     message: "Your comment has been updated",
   });
-  next();
 });

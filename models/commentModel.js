@@ -43,7 +43,13 @@ commentSchema.pre(/^find/, function (next) {
 commentSchema.statics.addCommentToPost = async function (postId) {
   const comments = await this.find({ post: postId });
   let arrComments = [];
-  comments.map((comment) => arrComments.push(comment.comment));
+
+  comments.map((comment) =>
+    arrComments.push({
+      comment: comment.comment,
+      username: comment.user.username,
+    })
+  );
   await Post.findByIdAndUpdate(postId, {
     comments: arrComments,
   });

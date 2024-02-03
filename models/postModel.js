@@ -21,7 +21,13 @@ const postSchema = new mongoose.Schema(
       type: [String],
     },
     comments: {
-      type: [String],
+      type: [
+        {
+          comment: String,
+          username: String,
+        },
+      ],
+      default: [],
     },
     numComments: {
       type: Number,
@@ -44,6 +50,7 @@ postSchema.pre(/^find/, function (next) {
     path: "user",
     select: "username profilePic",
   });
+
   next();
 });
 
