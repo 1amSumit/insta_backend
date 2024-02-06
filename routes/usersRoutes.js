@@ -12,5 +12,6 @@ router
   .route("/deleteUser/:userId")
   .delete(usersController.protect, usersController.deleteUser);
 router.route("/login").post(usersController.login);
+router.route("/getUser/:username").get(usersController.getUserByUserName);
 
 module.exports = router;

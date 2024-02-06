@@ -145,3 +145,16 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   });
   next();
 });
+
+exports.getUserByUserName = catchAsync(async (req, res, next) => {
+  const username = req.params.username;
+  const userProfile = await User.findOne({ username: username });
+  if (!userProfile) {
+    return next("USer not found with this username.");
+  }
+
+  res.status(200).json({
+    status: "success",
+    userProfile: userProfile,
+  });
+});
