@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const multer = require("multer");
 const AppError = require("../utils/appError");
+const catchAsync = require("../utils/catchAsync");
 const multerStorage = multer.memoryStorage();
 const cloudinary = require("cloudinary").v2;
 
@@ -55,9 +56,12 @@ exports.uploadProfilePicture = catchAsync(async (req, res, next) => {
   };
   result = await uploadFromBuffer(req);
 
-  const profilePic = await User.findByIdAndUpdate({
-    profilePic: result.secure_url,
-  });
+  const profilePic = await User.findByIdAndUpdate(
+    { _id: user._id },
+    {
+      profilePic: result.secure_url,
+    }
+  );
 
   res.status(200).json({
     status: "success",

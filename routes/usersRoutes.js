@@ -1,5 +1,6 @@
 const express = require("express");
 const usersController = require("../controllers/usersController");
+const profilePictureController = require("../controllers/profilePictureController");
 
 const router = express.Router();
 
@@ -13,5 +14,14 @@ router
   .delete(usersController.protect, usersController.deleteUser);
 router.route("/login").post(usersController.login);
 router.route("/getUser/:username").get(usersController.getUserByUserName);
+
+router
+  .route("/uploadProfilePic/:username")
+  .post(
+    profilePictureController.uploadProfilePic,
+    profilePictureController.uploadProfilePicture
+  );
+
+router.get("/getProfileDetails/:username", usersController.getUserByUserName);
 
 module.exports = router;
