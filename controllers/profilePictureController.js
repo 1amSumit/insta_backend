@@ -4,6 +4,7 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const multerStorage = multer.memoryStorage();
 const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 
 cloudinary.config({
   cloud_name: "dijmmmwgd",
@@ -26,7 +27,7 @@ const upload = multer({
 });
 
 exports.uploadProfilePicture = catchAsync(async (req, res, next) => {
-  const username = req.parmas.username;
+  const username = req.params.username;
   if (!req.file) {
     return next();
   }
@@ -56,7 +57,7 @@ exports.uploadProfilePicture = catchAsync(async (req, res, next) => {
   };
   result = await uploadFromBuffer(req);
 
-  const profilePic = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     { _id: user._id },
     {
       profilePic: result.secure_url,
@@ -66,7 +67,6 @@ exports.uploadProfilePicture = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Profil pic uploaded successfully",
-    profilePic,
   });
 });
 

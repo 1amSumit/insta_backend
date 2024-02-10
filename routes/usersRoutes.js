@@ -17,7 +17,7 @@ router.route("/getUser/:username").get(usersController.getUserByUserName);
 
 router
   .route("/uploadProfilePic/:username")
-  .post(
+  .patch(
     profilePictureController.uploadProfilePic,
     profilePictureController.uploadProfilePicture
   );

@@ -26,6 +26,22 @@ const userSchema = new mongoose.Schema({
     default: "please upload",
   },
 
+  followers: {
+    type: Number,
+    default: 0,
+  },
+  followings: {
+    type: Number,
+    default: 0,
+  },
+  numPosts: {
+    type: Number,
+    default: 0,
+  },
+  posts: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+
   password: {
     type: String,
     required: [true, "Please provide your password"],
