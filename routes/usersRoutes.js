@@ -23,7 +23,7 @@ router
   );
 
 router.get("/getProfileDetails/:username", usersController.getUserByUserName);
-router.get(
+router.patch(
   "/removeProfilPic/:username",
   profilePictureController.removeProfilePic
 );

@@ -74,4 +74,16 @@ exports.uploadProfilePic = upload.single("file");
 
 exports.removeProfilePic = catchAsync(async (req, res, next) => {
   const username = req.params.username;
+
+  await User.findOneAndUpdate(
+    { username: username },
+    {
+      profilePic: "",
+    }
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "removed profile picture successfully",
+  });
 });
