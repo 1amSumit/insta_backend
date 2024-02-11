@@ -71,3 +71,7 @@ exports.uploadProfilePicture = catchAsync(async (req, res, next) => {
 });
 
 exports.uploadProfilePic = upload.single("file");
+
+exports.removeProfilePic = catchAsync(async (req, res, next) => {
+  const username = req.params.username;
+});
