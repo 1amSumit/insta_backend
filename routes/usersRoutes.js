@@ -27,5 +27,5 @@ router.patch(
   "/removeProfilPic/:username",
   profilePictureController.removeProfilePic
 );
-
+router.route("/searchUser").get(usersController.searchUserByName);
 module.exports = router;
