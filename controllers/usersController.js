@@ -176,3 +176,5 @@ exports.searchUserByName = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+exports.followUser = catchAsync(async (req, res, next) => {});
