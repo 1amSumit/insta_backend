@@ -5,7 +5,7 @@ const AppError = require("../utils/appError");
 exports.addComment = catchAsync(async (req, res, next) => {
   const comment = req.body.comment;
   if (!comment) {
-    return next(new AppError("PLease add Comment to Update"));
+    return next(new AppError("Please add Comment to Update"));
   }
 
   const commentCreated = await Comment.create({
