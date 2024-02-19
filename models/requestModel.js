@@ -22,6 +22,17 @@ const requestSchema = mongoose.Schema(
   }
 );
 
+requestSchema.statics.addRequestsToUser = async function (userId) {
+  const recieveRequest = await this.find({ recieverUser: userId });
+  const recieveReqArr = [];
+  recieveRequest.map((req) => recieveReqArr.push(req.senderUser));
+
+  await User.findByIdAndUpdate(userId, {
+    requests: recieveReqArr,
+    numRequests: recieveReqArr.length,
+  });
+};
+
 requestSchema.statics.addRequestedToUser = async function (userId) {
   const requestedUserArr = [];
   const requestedUser = await this.find({ senderUser: userId });
@@ -36,6 +47,7 @@ requestSchema.statics.addRequestedToUser = async function (userId) {
 
 requestSchema.post("save", async function () {
   await this.constructor.addRequestedToUser(this.senderUser);
+  await this.constructor.addRequestsToUser(this.recieverUser);
 });
 
 requestSchema.index({ senderUser: 1, recieverUser: 1 }, { unique: true });

@@ -2,10 +2,10 @@ const Requests = require("../models/requestModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.sendFollowRequest = catchAsync(async (req, res, next) => {
-  const senderUser = req.user;
+  const senderUser = req.user._id;
   const recieverUser = req.params.userId;
 
-  const requestCreated = await Requests.create({
+  await Requests.create({
     senderUser: senderUser,
     recieverUser: recieverUser,
     createdAt: Date.now(),
@@ -15,4 +15,9 @@ exports.sendFollowRequest = catchAsync(async (req, res, next) => {
     status: "success",
     message: "Request sent",
   });
+});
+
+exports.recieveFollowRequest = catchAsync(async (req, res, next) => {
+  const senderUser = req.params.userId;
+  const recieverUser = req.user._id;
 });
