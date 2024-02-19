@@ -53,6 +53,15 @@ const userSchema = new mongoose.Schema({
     default: 0,
   },
 
+  requested: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+
+  numRequested: {
+    type: Number,
+    default: 0,
+  },
+
   numPosts: {
     type: Number,
     default: 0,

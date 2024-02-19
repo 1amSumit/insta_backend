@@ -22,27 +22,20 @@ const requestSchema = mongoose.Schema(
   }
 );
 
-requestSchema.statics.addRequestToUser = async function (userId) {
-  const requestsUserArr = [];
-  const requestedUser = await this.find({ recieverUser: userId });
+requestSchema.statics.addRequestedToUser = async function (userId) {
+  const requestedUserArr = [];
+  const requestedUser = await this.find({ senderUser: userId });
 
-  console.log(requestedUser);
+  requestedUser.map((req) => requestedUserArr.push(req.recieverUser));
 
-  // requestedUser.map((req) =>
-  //   requestsUserArr.push({
-  //     requestFromUser: req.senderUser,
-  //   })
-  // );
-
-  // console.log(requestsUserArr);
-
-  // await User.findByIdAndUpdate(userId, {
-  //   requests: requestedUser,
-  // });
+  await User.findByIdAndUpdate(userId, {
+    requested: requestedUserArr,
+    numRequested: requestedUserArr.length,
+  });
 };
 
 requestSchema.post("save", async function () {
-  await this.constructor.addRequestToUser(this.senderUser);
+  await this.constructor.addRequestedToUser(this.senderUser);
 });
 
 requestSchema.index({ senderUser: 1, recieverUser: 1 }, { unique: true });
