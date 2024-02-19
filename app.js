@@ -7,6 +7,7 @@ const commentRouter = require("./routes/commentRoutes");
 const likeRoutes = require("./routes/likeRoutes");
 const errorController = require("./controllers/errorController");
 const AppError = require("./utils/appError");
+const requestsRoutes = require("./routes/requestsRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRoutes);
+app.use("/api/v1/requests", requestsRoutes);
 
 // app.options('*', cors());
 app.all("*", (req, res, next) => {

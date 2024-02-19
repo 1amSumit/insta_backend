@@ -27,14 +27,32 @@ const userSchema = new mongoose.Schema({
       "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png",
   },
 
+  numFollowers: {
+    type: Number,
+    default: 0,
+  },
+
+  numFollowings: {
+    type: Number,
+    default: 0,
+  },
+
   followers: {
-    type: Number,
-    default: 0,
+    type: [mongoose.Schema.Types.ObjectId],
   },
+
   followings: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+
+  requests: {
+    type: [mongoose.Schema.Types.ObjectId],
+  },
+  numRequests: {
     type: Number,
     default: 0,
   },
+
   numPosts: {
     type: Number,
     default: 0,

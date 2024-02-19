@@ -164,7 +164,7 @@ exports.getUserByUserName = catchAsync(async (req, res, next) => {
 exports.searchUserByName = catchAsync(async (req, res, next) => {
   const name = req.query.name;
 
-  const regex = new RegExp(`^${name}`, "i");
+  const regex = new RegExp(`${name}`, "i");
   const userData = await User.find({ username: regex }).select(
     "username profilePic"
   );
