@@ -38,26 +38,26 @@ const userSchema = new mongoose.Schema({
   },
 
   followers: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [String],
   },
 
   followings: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [String],
   },
 
-  requests: {
-    type: [mongoose.Schema.Types.ObjectId],
+  requestSent: {
+    type: [String],
   },
-  numRequests: {
+  numRequestSent: {
     type: Number,
     default: 0,
   },
 
-  requested: {
-    type: [mongoose.Schema.Types.ObjectId],
+  requestRec: {
+    type: [String],
   },
 
-  numRequested: {
+  numRequestedRec: {
     type: Number,
     default: 0,
   },

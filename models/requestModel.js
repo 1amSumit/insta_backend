@@ -4,12 +4,10 @@ const User = require("./userModel");
 const requestSchema = mongoose.Schema(
   {
     senderUser: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
     recieverUser: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
     createdAt: {
       type: Date,
@@ -22,32 +20,38 @@ const requestSchema = mongoose.Schema(
   }
 );
 
-requestSchema.statics.addRequestsToUser = async function (userId) {
-  const recieveRequest = await this.find({ recieverUser: userId });
-  const recieveReqArr = [];
-  recieveRequest.map((req) => recieveReqArr.push(req.senderUser));
+requestSchema.statics.addRequestsUserSent = async function (userId) {
+  const sentReq = await this.find({ senderUser: userId });
+  const sentReqArr = [];
+  sentReq.map((req) => sentReqArr.push(req.recieverUser));
 
-  await User.findByIdAndUpdate(userId, {
-    requests: recieveReqArr,
-    numRequests: recieveReqArr.length,
-  });
+  await User.findOneAndUpdate(
+    { username: userId },
+    {
+      requestSent: sentReqArr,
+      numRequestSent: sentReqArr.length,
+    }
+  );
 };
 
-requestSchema.statics.addRequestedToUser = async function (userId) {
-  const requestedUserArr = [];
-  const requestedUser = await this.find({ senderUser: userId });
+requestSchema.statics.addRequestsUserRecieved = async function (userId) {
+  const recRegArr = [];
+  const recReq = await this.find({ recieverUser: userId });
 
-  requestedUser.map((req) => requestedUserArr.push(req.recieverUser));
+  recReq.map((req) => recRegArr.push(req.senderUser));
 
-  await User.findByIdAndUpdate(userId, {
-    requested: requestedUserArr,
-    numRequested: requestedUserArr.length,
-  });
+  await User.findOneAndUpdate(
+    { username: userId },
+    {
+      requestRec: recRegArr,
+      numRequestedRec: recRegArr.length,
+    }
+  );
 };
 
 requestSchema.post("save", async function () {
-  await this.constructor.addRequestedToUser(this.senderUser);
-  await this.constructor.addRequestsToUser(this.recieverUser);
+  await this.constructor.addRequestsUserSent(this.senderUser);
+  await this.constructor.addRequestsUserRecieved(this.recieverUser);
 });
 
 requestSchema.index({ senderUser: 1, recieverUser: 1 }, { unique: true });

@@ -5,7 +5,7 @@ const usersController = require("../controllers/usersController");
 const router = express.Router();
 
 router
-  .route("/sendRequest/:userId")
+  .route("/sendRequest/:user")
   .post(usersController.protect, requestController.sendFollowRequest);
 
 module.exports = router;
