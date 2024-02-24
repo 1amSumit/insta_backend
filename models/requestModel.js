@@ -9,6 +9,10 @@ const requestSchema = mongoose.Schema(
     recieverUser: {
       type: String,
     },
+    accepted: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: {
       type: Date,
       default: Date.now(),

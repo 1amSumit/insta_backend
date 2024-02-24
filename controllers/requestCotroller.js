@@ -17,3 +17,8 @@ exports.sendFollowRequest = catchAsync(async (req, res, next) => {
     message: "Request sent",
   });
 });
+
+exports.acceptRequest = catchAsync(async (req, res, next) => {
+  const userToBeAccepted = req.params.user;
+  const userIsAccepting = req.user;
+});

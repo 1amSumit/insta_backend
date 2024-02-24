@@ -47,7 +47,7 @@ commentSchema.statics.addCommentToPost = async function (postId) {
   comments.map((comment) =>
     arrComments.push({
       comment: comment.comment,
-      username: comment.user.username,
+      username: comment.user.username || null,
     })
   );
   await Post.findByIdAndUpdate(postId, {
