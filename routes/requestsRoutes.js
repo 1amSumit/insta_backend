@@ -4,8 +4,10 @@ const usersController = require("../controllers/usersController");
 
 const router = express.Router();
 
-router
-  .route("/sendRequest/:user")
-  .post(usersController.protect, requestController.sendFollowRequest);
+router.use(usersController.protect);
+
+router.route("/sendRequest/:user").post(requestController.sendFollowRequest);
+
+router.post("/acceptRequest/:user", requestController.acceptRequest);
 
 module.exports = router;
