@@ -149,7 +149,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 exports.getUserByUserName = catchAsync(async (req, res, next) => {
   const username = req.params.username;
   const userProfile = await User.findOne({ username: username }).select(
-    "username profilePic followings followers numPosts posts requestRec requestSent numRequestSent numRequestedRec"
+    "username profilePic numFollowers numFollowings followings followers numPosts posts requestRec requestSent numRequestSent numRequestedRec"
   );
   if (!userProfile) {
     return next("User not found with this username.");
