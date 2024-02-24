@@ -38,7 +38,12 @@ exports.acceptRequest = catchAsync(async (req, res, next) => {
 
   await User.findOneAndUpdate(
     { username: userIsAccepting },
-    { $push: { followers: userToBeAccepted }, $inc: { numFollowers: 1 } },
+    {
+      $push: { followers: userToBeAccepted },
+      $inc: { numFollowers: 1 },
+      $pull: { requestRec: userToBeAccepted },
+      $inc: { numRequestedRec: -1 },
+    },
     { new: true }
   );
 
