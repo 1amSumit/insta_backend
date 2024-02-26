@@ -30,7 +30,8 @@ exports.acceptRequest = catchAsync(async (req, res, next) => {
     },
     {
       accepted: true,
-    }
+    },
+    { new: true }
   );
 
   if (!requestDoc) {
@@ -41,16 +42,16 @@ exports.acceptRequest = catchAsync(async (req, res, next) => {
     { username: userIsAccepting },
     {
       $push: { followers: userToBeAccepted },
-      $inc: { numFollowers: 1 },
       $pull: { requestRec: userToBeAccepted },
-      $inc: { numRequestedRec: -1 },
+      $inc: { numFollowers: 1, numRequestedRec: -1 },
     },
     { new: true }
   );
 
   await User.findOneAndUpdate(
     { username: userToBeAccepted },
-    { $push: { followings: userIsAccepting }, $inc: { numFollowings: 1 } }
+    { $push: { followings: userIsAccepting }, $inc: { numFollowings: 1 } },
+    { new: true }
   );
   res.status(200).json({
     status: "success",
@@ -68,7 +69,7 @@ exports.hasAccepted = catchAsync(async (req, res, next) => {
       message: "user is same as logged in user",
     });
 
-    return next();
+    return next(new AppError("Can't sent request to own "));
   }
 
   const isAccepted = await Requests.findOne({
@@ -77,7 +78,7 @@ exports.hasAccepted = catchAsync(async (req, res, next) => {
   });
 
   if (!isAccepted) {
-    return next();
+    return next(new AppError("User is already accepted."));
   }
 
   res.status(200).json({
