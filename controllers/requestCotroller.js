@@ -66,10 +66,10 @@ exports.hasAccepted = catchAsync(async (req, res, next) => {
   if (userLoggedIn === anotherUser) {
     res.status(501).json({
       status: "success",
-      message: "user is same as logged in user",
+      message: "user is the same as the logged-in user",
     });
 
-    return next(new AppError("Can't sent request to own "));
+    return next(new AppError("Can't send a request to oneself"));
   }
 
   const isAccepted = await Requests.findOne({
@@ -78,7 +78,7 @@ exports.hasAccepted = catchAsync(async (req, res, next) => {
   });
 
   if (!isAccepted) {
-    return next(new AppError("User is already accepted."));
+    return next(new AppError("User is not yet accepted."));
   }
 
   res.status(200).json({

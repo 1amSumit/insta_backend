@@ -70,7 +70,6 @@ const handleJwtTokenExpired = () =>
   new AppError("Token Expired, pLease Login again");
 
 exports.errorHandler = (err, req, res, next) => {
-  console.log(err.stack);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
