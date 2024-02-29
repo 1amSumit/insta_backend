@@ -64,11 +64,6 @@ exports.hasAccepted = catchAsync(async (req, res, next) => {
   const anotherUser = req.params.user;
 
   if (userLoggedIn === anotherUser) {
-    res.status(501).json({
-      status: "success",
-      message: "user is the same as the logged-in user",
-    });
-
     return next(new AppError("Can't send a request to oneself"));
   }
 

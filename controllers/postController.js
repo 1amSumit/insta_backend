@@ -1,4 +1,5 @@
 const Post = require("../models/postModel");
+const User = require("../models/userModel");
 const multer = require("multer");
 const multerStorage = multer.memoryStorage();
 const cloudinary = require("cloudinary").v2;
@@ -91,7 +92,7 @@ exports.fileSaving = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.postUpload = upload.single("file"); //"file"--> this should b same as in the form submiting name
+exports.postUpload = upload.single("file");
 
 exports.getAllPosts = catchAsync(async (req, res, next) => {
   const posts = await Post.find()
@@ -119,10 +120,13 @@ exports.getPostOfLoggedInUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUserPosts = catchAsync(async (req, res, next) => {
-  const userId = req.params.userId;
-  if (!userId) {
+  const username = req.params.user;
+
+  if (!username) {
     return next(new AppError("user not found"));
   }
+
+  const userId = await User.findOne({ username: username });
   const userPosts = await Post.find({
     user: userId,
   }).populate("user");

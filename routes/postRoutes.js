@@ -12,6 +12,6 @@ router
 
 router.route("/currentUserPost").get(postController.getPostOfLoggedInUser);
 
-router.route("/getUserPost/:userId").get(postController.getUserPosts);
+router.route("/getUserPost/:user").get(postController.getUserPosts);
 
 module.exports = router;
