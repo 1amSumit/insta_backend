@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("../models/userModel");
 
 const postSchema = new mongoose.Schema(
   {
@@ -38,6 +39,9 @@ const postSchema = new mongoose.Schema(
       ref: "User",
       required: [true, "Every post have User"],
     },
+    username: {
+      type: String,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -48,7 +52,7 @@ const postSchema = new mongoose.Schema(
 postSchema.pre(/^find/, function (next) {
   this.populate("user").populate({
     path: "user",
-    select: "username profilePic",
+    select: "username profilePic _id",
   });
 
   next();

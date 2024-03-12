@@ -81,9 +81,18 @@ exports.fileSaving = catchAsync(async (req, res, next) => {
   const post = await Post.create({
     post: result.secure_url,
     user: req.user,
+    username: req.user.username,
     description: req.body.description,
     createdAt: Date.now(),
   });
+
+  await User.findOneAndUpdate(
+    { username: req.user.username },
+    {
+      $push: { posts: post },
+      $inc: { numPosts: 1 },
+    }
+  );
 
   res.status(200).json({
     status: "success",
@@ -135,5 +144,20 @@ exports.getUserPosts = catchAsync(async (req, res, next) => {
     status: "success",
     results: userPosts.length,
     userPosts,
+  });
+});
+
+exports.getLoggedInUserFeed = catchAsync(async (req, res, next) => {
+  const loggedInUser = req.user;
+  const followingUsers = loggedInUser.followings;
+
+  const posts = await Post.find({ username: { $in: followingUsers } });
+
+  res.status(200).json({
+    status: "success",
+    results: posts.length,
+    data: {
+      posts,
+    },
   });
 });

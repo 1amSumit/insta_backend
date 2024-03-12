@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema({
     default: 0,
   },
 
+  feed: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Post",
+  },
+
   requestRec: {
     type: [String],
   },
@@ -68,6 +73,7 @@ const userSchema = new mongoose.Schema({
   },
   posts: {
     type: [mongoose.Schema.Types.ObjectId],
+    ref: "Post",
   },
 
   password: {

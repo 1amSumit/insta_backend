@@ -14,4 +14,8 @@ router.route("/currentUserPost").get(postController.getPostOfLoggedInUser);
 
 router.route("/getUserPost/:user").get(postController.getUserPosts);
 
+router
+  .route("/getFeed")
+  .get(usersController.protect, postController.getLoggedInUserFeed);
+
 module.exports = router;
