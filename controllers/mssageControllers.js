@@ -12,12 +12,10 @@ exports.sendMessage = catchAsync(async (req, res, next) => {
     return next(new AppError("Message is not present."));
   }
 
-  const receiverUser = await User.findOne({ username: reciever });
-
   const newMessage = await Message.create({
     message: messageBody,
     from: sender._id,
-    to: receiverUser._id,
+    to: reciever,
     createdAt: Date.now(),
   });
 
@@ -29,12 +27,13 @@ exports.sendMessage = catchAsync(async (req, res, next) => {
 
 exports.getMessageOfUsers = catchAsync(async (req, res, next) => {
   const sender = req.user;
-  const reciever = req.params.user;
-  const receiverUser = await User.findOne({ username: reciever });
+  const receiver = req.params.user;
 
   const messages = await Message.find({
-    from: sender._id,
-    to: receiverUser._id,
+    $or: [
+      { from: sender, to: receiver },
+      { from: receiver, to: sender },
+    ],
   });
 
   res.status(200).json({

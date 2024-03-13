@@ -125,7 +125,9 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.getUserById = catchAsync(async (req, res, next) => {
   const id = req.params.userId;
-  const user = await User.findOne({ username: id });
+
+  const user = await User.findById(id);
+
   if (!user) {
     return next(new Error("User not found."));
   }
@@ -133,8 +135,6 @@ exports.getUserById = catchAsync(async (req, res, next) => {
     status: "success",
     user,
   });
-
-  next();
 });
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
