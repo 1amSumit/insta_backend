@@ -34,7 +34,7 @@ exports.getMessageOfUsers = catchAsync(async (req, res, next) => {
       { from: sender, to: receiver },
       { from: receiver, to: sender },
     ],
-  });
+  }).sort({ createdAt: 1 });
 
   res.status(200).json({
     status: "success",
@@ -51,5 +51,31 @@ exports.updateMessage = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Message Updated",
+  });
+});
+
+exports.getInbox = catchAsync(async (req, res, next) => {
+  const sender = req.user;
+
+  const inbox = await Message.find({ from: sender._id }).sort({
+    createdAt: -1,
+  });
+
+  const inboxArr = [];
+  inbox.forEach((message) => {
+    const exists = inboxArr.some((item) => item.id === message.to.toString());
+    if (!exists) {
+      inboxArr.push({
+        id: message.to.toString(),
+        lastMessage: message.message,
+      });
+    }
+  });
+
+  // console.log(inboxArr);
+
+  res.status(200).json({
+    status: "success",
+    inboxArr,
   });
 });

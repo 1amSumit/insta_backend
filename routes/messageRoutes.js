@@ -10,4 +10,6 @@ router
   .route("/updateMessage/:messageId")
   .patch(messageControllers.updateMessage);
 
+router.get("/getInbox", messageControllers.getInbox);
+
 module.exports = router;
