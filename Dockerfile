@@ -8,7 +8,7 @@ RUN npm install
 
 COPY config.env .
 
-COPY src/ src/
+COPY ./ ./
 
 ENV PORT=8080
 

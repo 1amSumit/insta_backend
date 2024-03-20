@@ -72,8 +72,6 @@ exports.getInbox = catchAsync(async (req, res, next) => {
     }
   });
 
-  // console.log(inboxArr);
-
   res.status(200).json({
     status: "success",
     inboxArr,
