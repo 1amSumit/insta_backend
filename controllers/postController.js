@@ -151,7 +151,9 @@ exports.getLoggedInUserFeed = catchAsync(async (req, res, next) => {
   const loggedInUser = req.user;
   const followingUsers = loggedInUser.followings;
 
-  const posts = await Post.find({ username: { $in: followingUsers } });
+  const posts = await Post.find({ username: { $in: followingUsers } })
+    .sort({ createdAt: -1 })
+    .exec();
 
   res.status(200).json({
     status: "success",
