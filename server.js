@@ -8,9 +8,7 @@ const server = () => {
     process.exit(1);
   });
 
-  if (process.env.NODE_ENV === "development") {
-    dotenv.config({ path: "./config.env" });
-  }
+  dotenv.config({ path: "./config.env" });
 
   const DB = process.env.DATA_BASE;
 

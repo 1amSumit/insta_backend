@@ -13,6 +13,21 @@ exports.sendFollowRequest = catchAsync(async (req, res, next) => {
     createdAt: Date.now(),
   });
 
+  await User.findOneAndUpdate(
+    { username: recieverUsername },
+    {
+      $push: { requestRec: senderUser },
+      $inc: { numRequestedRec: 1 },
+    }
+  );
+  await User.findOneAndUpdate(
+    { username: senderUser },
+    {
+      $push: { requestSent: recieverUsername },
+      $inc: { numRequestSent: 1 },
+    }
+  );
+
   res.status(200).json({
     status: "success",
     message: "Request sent",
@@ -44,13 +59,16 @@ exports.acceptRequest = catchAsync(async (req, res, next) => {
       $push: { followers: userToBeAccepted },
       $pull: { requestRec: userToBeAccepted },
       $inc: { numFollowers: 1, numRequestedRec: -1 },
-    },
-    { new: true }
+    }
   );
 
   await User.findOneAndUpdate(
     { username: userToBeAccepted },
-    { $push: { followings: userIsAccepting }, $inc: { numFollowings: 1 } },
+    {
+      $push: { followings: userIsAccepting },
+      $pull: { requestRec: userToBeAccepted },
+      $inc: { numFollowings: 1 },
+    },
     { new: true }
   );
   res.status(200).json({
