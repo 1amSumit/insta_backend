@@ -12,4 +12,6 @@ router
 
 router.get("/getInbox", messageControllers.getInbox);
 
+router.post("/sendMessageAllUsers", messageControllers.sendMessageAllUsers);
+
 module.exports = router;

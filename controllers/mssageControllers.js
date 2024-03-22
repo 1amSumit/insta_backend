@@ -77,3 +77,26 @@ exports.getInbox = catchAsync(async (req, res, next) => {
     inboxArr,
   });
 });
+
+exports.sendMessageAllUsers = catchAsync(async (req, res, next) => {
+  const from = req.user;
+  const users = req.body.users;
+  const message = req.body.message;
+
+  const messages = await Promise.all(
+    users.map(async (user) => {
+      const newMessage = Message.create({
+        message: message,
+        from: from._id,
+        to: user.id,
+        createdAt: Date.now(),
+      });
+    })
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "Messages successfully sent to all users.",
+    messages: messages,
+  });
+});
