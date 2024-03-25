@@ -24,12 +24,14 @@ exports.login = catchAsync(async (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
-    return next(new AppError("Please provide your correct email and password"));
+    return next(
+      new AppError("Please provide your correct email and password", 501)
+    );
   }
 
   const user = await User.findOne({ email }).select("+password");
   if (!user || !(await user.correctPasssword(password, user.password))) {
-    return next(new AppError("Invalid email or password"));
+    return next(new AppError("Invalid email or password", 501));
   }
 
   const token = tokenGen(user._id);

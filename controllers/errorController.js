@@ -12,7 +12,7 @@ const sendErrorDev = (err, req, res) => {
   }
   //Render
   return res.status(err.statusCode).render("error", {
-    title: "Erro Occured",
+    title: "Error Occured",
     msg: err.message,
   });
 };
