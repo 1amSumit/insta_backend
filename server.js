@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const server = () => {
   const io = require("socket.io")(3000, {
     cors: {
-      origin: ["http://localhost:5173"],
+      origin: ["http://localhost:5173", "https://insta-sumit.vercel.app"],
     },
   });
 
