@@ -3,23 +3,9 @@ const app = require("./app");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 
+const socketIo = require("socket.io");
+
 const server = () => {
-  const io = require("socket.io")(3000, {
-    cors: {
-      origin: ["http://localhost:5173", "https://insta-sumit.vercel.app"],
-    },
-  });
-
-  io.on("connection", (socket) => {
-    socket.on("join-room", (room) => {
-      socket.join(room);
-    });
-    socket.on("send-message", (message, room) => {
-      socket.to(room).emit("receive-message", message);
-      createMessage(message);
-    });
-  });
-
   process.on("uncaughtException", (error) => {
     console.log(error.name, error.message);
     process.exit(1);
@@ -34,8 +20,26 @@ const server = () => {
   });
 
   const PORT = process.env.PORT || 5500;
+
   const serverInstance = app.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`);
+  });
+
+  const io = socketIo(serverInstance, {
+    cors: {
+      origin: ["http://localhost:5173", "https://insta-sumit.vercel.app"],
+    },
+  });
+
+  io.on("connection", (socket) => {
+    socket.on("join-room", (room) => {
+      socket.join(room);
+    });
+
+    socket.on("send-message", (message, room) => {
+      socket.to(room).emit("receive-message", message);
+      createMessage(message);
+    });
   });
 
   process.on("unhandledRejection", (err) => {
@@ -56,3 +60,9 @@ const server = () => {
 server();
 
 module.exports = server;
+
+// const io = require("socket.io")(3000, {
+//   cors: {
+//     origin: ["http://localhost:5173", "https://insta-sumit.vercel.app"],
+//   },
+// });
