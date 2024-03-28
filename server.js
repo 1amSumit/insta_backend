@@ -11,8 +11,11 @@ const server = () => {
   });
 
   io.on("connection", (socket) => {
-    console.log(socket.id);
-    socket.on("send-message", (message) => {
+    socket.on("join-room", (room) => {
+      socket.join(room);
+    });
+    socket.on("send-message", (message, room) => {
+      socket.to(room).emit("receive-message", message);
       createMessage(message);
     });
   });
