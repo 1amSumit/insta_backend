@@ -3,25 +3,16 @@ const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
-exports.sendMessage = catchAsync(async (req, res, next) => {
-  const messageBody = req.body.message;
-  const sender = req.user;
-  const reciever = req.params.user;
-
-  if (!messageBody) {
+exports.createMessage = catchAsync(async (message) => {
+  if (!message) {
     return next(new AppError("Message is not present."));
   }
 
-  const newMessage = await Message.create({
-    message: messageBody,
-    from: sender._id,
-    to: reciever,
+  const mess = await Message.create({
+    message: message.message,
+    from: message.from,
+    to: message.to,
     createdAt: Date.now(),
-  });
-
-  res.status(200).json({
-    status: "success",
-    newMessage,
   });
 });
 

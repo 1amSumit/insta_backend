@@ -1,7 +1,21 @@
+const { createMessage } = require("./controllers/mssageControllers");
+const app = require("./app");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+
 const server = () => {
-  const app = require("./app");
-  const dotenv = require("dotenv");
-  const mongoose = require("mongoose");
+  const io = require("socket.io")(3000, {
+    cors: {
+      origin: ["http://localhost:5173"],
+    },
+  });
+
+  io.on("connection", (socket) => {
+    console.log(socket.id);
+    socket.on("send-message", (message) => {
+      createMessage(message);
+    });
+  });
 
   process.on("uncaughtException", (error) => {
     console.log(error.name, error.message);
@@ -17,20 +31,20 @@ const server = () => {
   });
 
   const PORT = process.env.PORT || 5500;
-  app.listen(PORT, () => {
+  const serverInstance = app.listen(PORT, () => {
     console.log(`Server Running on port ${PORT}`);
   });
 
   process.on("unhandledRejection", (err) => {
     console.log(err.name, err.message);
-    server.close(() => {
+    serverInstance.close(() => {
       process.exit(1);
     });
   });
 
   process.on("SIGTERM", () => {
     console.log("SIGTERM recieved Shutting down gracefully");
-    server.close(() => {
+    serverInstance.close(() => {
       console.log("Process terminated");
     });
   });
